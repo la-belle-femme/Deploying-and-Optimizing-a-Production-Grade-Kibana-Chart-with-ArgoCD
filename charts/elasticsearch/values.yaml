@@ -1,0 +1,53 @@
+# Elasticsearch configuration for development environment
+clusterName: "elasticsearch"
+nodeGroup: "master"
+
+# Single node setup for development
+replicas: 1
+minimumMasterNodes: 1
+
+# Resource allocation for development
+resources:
+  requests:
+    cpu: "500m"
+    memory: "1Gi"
+  limits:
+    cpu: "1000m"
+    memory: "2Gi"
+
+# Storage configuration
+volumeClaimTemplate:
+  accessModes: [ "ReadWriteOnce" ]
+  storageClassName: "standard"
+  resources:
+    requests:
+      storage: 10Gi
+
+# Security settings for development
+esConfig:
+  elasticsearch.yml: |
+    xpack.security.enabled: false
+    xpack.security.enrollment.enabled: false
+    xpack.security.http.ssl.enabled: false
+    xpack.security.transport.ssl.enabled: false
+
+# Service configuration
+service:
+  type: ClusterIP
+  httpPort: 9200
+  transportPort: 9300
+
+# Health checks
+readinessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  successThreshold: 3
+  timeoutSeconds: 5
+
+# Environment variables
+extraEnvs:
+  - name: discovery.type
+    value: single-node
+  - name: ES_JAVA_OPTS
+    value: "-Xmx1g -Xms1g"

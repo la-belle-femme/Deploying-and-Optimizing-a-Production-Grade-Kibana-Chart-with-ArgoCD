@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: elasticsearch
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://helm.elastic.co
+    chart: elasticsearch
+    targetRevision: 8.15.2
+    helm:
+      valueFiles:
+      - $values/charts/elasticsearch/values.yaml
+  sources:
+  - repoURL: https://helm.elastic.co
+    chart: elasticsearch
+    targetRevision: 8.15.2
+    helm:
+      valueFiles:
+      - $values/charts/elasticsearch/values.yaml
+  - repoURL: https://github.com/la-belle-femme/Deploying-and-Optimizing-a-Production-Grade-Kibana-Chart-with-ArgoCD.git
+    targetRevision: HEAD
+    ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: elastic
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

@@ -1,0 +1,48 @@
+# Kibana configuration for development environment
+replicas: 1
+
+# Resource allocation
+resources:
+  requests:
+    cpu: "200m"
+    memory: "512Mi"
+  limits:
+    cpu: "500m"
+    memory: "1Gi"
+
+# Elasticsearch connection
+elasticsearchHosts: "http://elasticsearch-master:9200"
+
+# Service configuration
+service:
+  type: NodePort
+  port: 5601
+  nodePort: 30561
+
+# Health checks
+healthCheckPath: "/app/kibana"
+
+# Kibana configuration
+kibanaConfig:
+  kibana.yml: |
+    server.host: "0.0.0.0"
+    server.shutdownTimeout: "5s"
+    elasticsearch.hosts: ["http://elasticsearch-master:9200"]
+    monitoring.ui.container.elasticsearch.enabled: true
+    server.publicBaseUrl: "http://44.192.16.145:30561"
+
+# Security settings for development
+extraEnvs:
+  - name: ELASTICSEARCH_USERNAME
+    value: ""
+  - name: ELASTICSEARCH_PASSWORD
+    value: ""
+
+# Ingress disabled for development
+ingress:
+  enabled: false
+
+# Resource policy
+podSecurityContext:
+  fsGroup: 1000
+  runAsUser: 1000
