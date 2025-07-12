@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kibana
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://helm.elastic.co
+    chart: kibana
+    targetRevision: 8.5.1
+    helm:
+      values: |
+        replicas: 1
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "512Mi"
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+        elasticsearchHosts: "http://elasticsearch-master:9200"
+        service:
+          type: NodePort
+          port: 5601
+          nodePort: 30561
+        kibanaConfig:
+          kibana.yml: |
+            server.host: "0.0.0.0"
+            server.shutdownTimeout: "5s"
+            elasticsearch.hosts: ["http://elasticsearch-master:9200"]
+            monitoring.ui.container.elasticsearch.enabled: true
+            server.publicBaseUrl: "http://44.192.16.145:30561"
+        extraEnvs:
+          - name: ELASTICSEARCH_USERNAME
+            value: ""
+          - name: ELASTICSEARCH_PASSWORD
+            value: ""
+        ingress:
+          enabled: false
+        podSecurityContext:
+          fsGroup: 1000
+          runAsUser: 1000
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: elastic
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

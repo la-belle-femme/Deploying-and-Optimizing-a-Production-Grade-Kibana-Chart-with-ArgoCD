@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: elasticsearch
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://helm.elastic.co
+    chart: elasticsearch
+    targetRevision: 8.5.1
+    helm:
+      values: |
+        clusterName: "elasticsearch"
+        nodeGroup: "master"
+        replicas: 1
+        minimumMasterNodes: 1
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
+        volumeClaimTemplate:
+          accessModes: [ "ReadWriteOnce" ]
+          storageClassName: "standard"
+          resources:
+            requests:
+              storage: 10Gi
+        esConfig:
+          elasticsearch.yml: |
+            xpack.security.enabled: false
+            xpack.security.enrollment.enabled: false
+            xpack.security.http.ssl.enabled: false
+            xpack.security.transport.ssl.enabled: false
+        service:
+          type: ClusterIP
+          httpPort: 9200
+          transportPort: 9300
+        extraEnvs:
+          - name: discovery.type
+            value: single-node
+          - name: ES_JAVA_OPTS
+            value: "-Xmx1g -Xms1g"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: elastic
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
