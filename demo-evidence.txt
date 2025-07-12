@@ -1,0 +1,81 @@
+í³¸ Capturing Demo Evidence...
+=== ArgoCD Applications ===
+NAME        SYNC STATUS   HEALTH STATUS   REVISION                                   PROJECT
+elk-stack   Synced        Healthy         6b11c2cb38e1df4edadf635101030135f10768f0   default
+
+=== ELK Stack Resources ===
+NAME                                 READY   STATUS    RESTARTS   AGE
+pod/elasticsearch-6dd7b99487-jws5m   1/1     Running   0          49m
+pod/kibana-5478b98c76-rpzs9          1/1     Running   0          49m
+
+NAME                           TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)          AGE
+service/elasticsearch-master   ClusterIP      10.107.51.74    <none>         9200/TCP         49m
+service/kibana                 NodePort       10.108.169.52   <none>         5601:30561/TCP   49m
+service/kibana-lb              LoadBalancer   10.105.63.77    10.105.63.77   80:30608/TCP     36m
+
+NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/elasticsearch   1/1     1            1           49m
+deployment.apps/kibana          1/1     1            1           49m
+
+NAME                                       DESIRED   CURRENT   READY   AGE
+replicaset.apps/elasticsearch-6dd7b99487   1         1         1       49m
+replicaset.apps/kibana-5478b98c76          1         1         1       49m
+
+=== Pod Details ===
+NAME                             READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+elasticsearch-6dd7b99487-jws5m   1/1     Running   0          49m   10.244.0.18   minikube   <none>           <none>
+kibana-5478b98c76-rpzs9          1/1     Running   0          49m   10.244.0.19   minikube   <none>           <none>
+
+=== Services and Endpoints ===
+NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)          AGE
+elasticsearch-master   ClusterIP      10.107.51.74    <none>         9200/TCP         49m
+kibana                 NodePort       10.108.169.52   <none>         5601:30561/TCP   49m
+kibana-lb              LoadBalancer   10.105.63.77    10.105.63.77   80:30608/TCP     36m
+NAME                   ENDPOINTS          AGE
+elasticsearch-master   10.244.0.18:9200   49m
+kibana                 10.244.0.19:5601   49m
+kibana-lb              10.244.0.19:5601   36m
+
+=== Elasticsearch Health ===
+
+=== Cluster Info ===
+Kubernetes control plane is running at https://192.168.49.2:8443
+CoreDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+NAME       STATUS   ROLES           AGE    VERSION
+minikube   Ready    control-plane   122m   v1.33.1
+
+=== Namespaces ===
+NAME              STATUS        AGE
+argocd            Active        114m
+default           Active        122m
+elastic           Terminating   85m
+elk-demo          Active        50m
+kube-node-lease   Active        122m
+kube-public       Active        122m
+kube-system       Active        122m
+
+=== Git Status ===
+6b11c2c Final ELK stack deployment - Demo Ready
+d98a10f Add Elasticsearch and Kibana configurations for ArgoCD deployment
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	argocd-apps/elk-stack-app.yaml
+	capture-demo-evidence.sh
+	demo-evidence.txt
+
+nothing added to commit but untracked files present (use "git add" to track)
+
+=== Current IP ===
+44.192.16.145
+
+=== Port Forwards ===
+ubuntu     42025  0.0  0.3 1286740 52200 pts/0   Sl   04:31   0:00 kubectl port-forward svc/argocd-server -n argocd 8089:443 --address=0.0.0.0
+âœ… Evidence captured for demo documentation
+Demo IP: 44.192.16.145
+ArgoCD Admin Password:
+36YQvCs3zINvDltW
